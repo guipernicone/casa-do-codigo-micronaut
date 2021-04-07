@@ -3,28 +3,33 @@ package br.com.zup.controller
 import br.com.zup.author.Author
 import br.com.zup.author.request.NewAuthorRequest
 import br.com.zup.author.response.AuthorDetailsResponse
+import br.com.zup.client.address.AddressClient
 import br.com.zup.repository.AuthorRepository
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
+import io.micronaut.http.uri.UriBuilder
 import io.micronaut.validation.Validated
 import javax.transaction.Transactional
 import javax.validation.Valid
-import javax.validation.constraints.Email
 
 @Validated
 @Controller("/author")
 class AuthorController(
-    val authorRepository: AuthorRepository
+    val authorRepository: AuthorRepository,
+    val addressClient: AddressClient
 ) {
 
     @Post
     @Transactional
-    fun registerAuthor(@Body @Valid request: NewAuthorRequest){
-        println(request)
+    fun registerAuthor(@Body @Valid request: NewAuthorRequest) : HttpResponse<Any> {
+        val addressClientResponse = addressClient.consultCep(request.cep)
 
-        val author:Author = request.toModel()
+        val author:Author = request.toModel(addressClientResponse)
         authorRepository.save(author)
-        println("Author => ${author.name}")
+
+        val uri = UriBuilder.of("/autores/{id}").expand(mutableMapOf(Pair("id", author.id)))
+        return HttpResponse.created(uri)
+
     }
 
     @Get

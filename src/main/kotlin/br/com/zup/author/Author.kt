@@ -7,9 +7,10 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Author (
+class Author(
     val name: String,
     val email: String,
+    val address: Address,
     description: String
 ) {
     @Id
