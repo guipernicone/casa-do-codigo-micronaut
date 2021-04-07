@@ -10,11 +10,12 @@ import javax.persistence.Id
 class Author (
     val name: String,
     val email: String,
-    val description: String
+    description: String
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    var description: String = description
     val createdIn: LocalDateTime = LocalDateTime.now()
 }
