@@ -36,7 +36,7 @@ class AuthorController(
     @Transactional
     fun getAuthors(@QueryValue(defaultValue = "") email: String) : HttpResponse<Any> {
         if (email.isBlank()) {
-            val author = authorRepository.findAll();
+            val author = authorRepository.findAll()
             val response = author.map {AuthorDetailsResponse(it)}
             return HttpResponse.ok(response)
         }
